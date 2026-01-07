@@ -1,0 +1,32 @@
+{
+  "name": "create-barejs",
+  "version": "1.0.0",
+  "description": "Official starter kit for the high-performance BareJS framework",
+  "type": "module",
+  "main": "./bin/index.ts",
+  "bin": {
+    "create-barejs": "./bin/index.ts"
+  },
+  "keywords": [
+    "barejs",
+    "framework",
+    "bun",
+    "create-app",
+    "fast",
+    "typescript"
+  ],
+  "author": "xarhang <xarhang@protronmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/xarhang/create-barejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xarhang/create-barejs.git"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "bun-types": "^1.3.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
