@@ -1,17 +1,50 @@
-# create-barejs 🚀
+# create-barejs
 
-The official scaffolding tool for **BareJS** — the high-performance, nanosecond-optimized web framework built for [Bun](https://bun.sh).
+The official scaffolding tool for **BareJS** — an ultra-high-performance web engine architected for [Bun](https://bun.sh) and built for **Mechanical Sympathy**.
 
 [![NPM Version](https://img.shields.io/npm/v/create-barejs.svg)](https://www.npmjs.com/package/create-barejs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🏎️ Why BareJS?
+## Why BareJS?
 
-BareJS is designed for developers who need extreme speed. It features an **Object Pooling** system for the `Context` object to eliminate Garbage Collection (GC) spikes and a hybrid routing system that supports both modern `Context` patterns and native `Request/Params` styles.
+BareJS isn't just another framework; it's a specialized engine built to eliminate overhead at every layer of the HTTP lifecycle.
 
-## 🛠️ Quick Start
+* **JIT Route Compilation**: Routes and middleware chains are flattened into a single, high-speed execution path at startup.
+* **Object Pooling**: Eliminates Garbage Collection (GC) spikes by recycling the `Context` object through a pre-allocated circular pool.
+* **Lazy Body Parsing**: Maintains nanosecond-level latency for GET requests by only parsing JSON payloads on-demand via `ctx.jsonBody()`.
+* **Zero-Dependency Core**: Leverages Bun's native APIs for maximum optimization without the bloat.
 
-You don't need to install anything globally. Just run the following command using Bun:
+## Quick Start
+
+Initialize a new high-performance project instantly using the Bun CLI. No global installation required.
 
 ```bash
 bun create barejs my-awesome-app
+
+```
+
+### What's Inside?
+
+Running this command generates a production-ready boilerplate including:
+
+* **`index.ts`**: Optimized starter code with GET, Parametric, and POST routes.
+* **`tsconfig.json`**: Pre-configured for Bun types and strict TypeScript safety.
+* **Object-Pool Ready**: Pre-tuned environment for high-concurrency workloads.
+
+## Development
+
+Once created, navigate to your folder and start the development server with hot-reloading:
+
+```bash
+cd my-awesome-app
+bun dev
+
+```
+
+## 📘 Documentation
+
+For advanced usage, including **JWT Authentication**, **Data Validation (TypeBox/Zod)**, and **Middleware Orchestration**, please visit the main [BareJS Repository](https://www.google.com/search?q=https://github.com/xarhang/bareJS).
+
+---
+
+**Maintained by [xarhang](https://github.com/xarhang) | **License: MIT**

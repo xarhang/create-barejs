@@ -19,7 +19,7 @@ async function init() {
   // 1. Create directory structure
   await mkdir(root, { recursive: true });
 
-  // 2. package.json (The user's project details)
+  // 2. package.json
   const pkg = {
     name: projectName,
     version: "1.0.0",
@@ -37,25 +37,38 @@ async function init() {
     }
   };
 
-  // 3. index.ts (The starter code)
-  const indexTs = `import { BareJS } from "barejs";
-import type { Context, Params } from "barejs"; 
+  // 3. index.ts (Updated for the new Lazy Body & Context Architecture)
+  const indexTs = `import { BareJS, type Context } from "barejs";
 
 const app = new BareJS();
 
+// Basic GET route
 app.get("/", (ctx: Context) => {
   return ctx.json({ message: "Welcome to BareJS!" });
 });
 
-app.get("/user/:id", (req: Request, params: Params) => {
-  return { id: params.id };
+// Route with Parameters (JIT extracted)
+app.get("/user/:id", (ctx: Context) => {
+  const id = ctx.params.id;
+  return { 
+    id,
+    message: \`User ID is \${id}\` 
+  };
+});
+
+// POST route with Lazy Body Parsing
+app.post("/submit", async (ctx: Context) => {
+  const body = await ctx.jsonBody(); // ⚡ JIT Lazy Parsing
+  return ctx.status(201).json({ 
+    received: true, 
+    data: body 
+  });
 });
 
 app.listen(3000);
 console.log("🔥 BareJS running on http://localhost:3000");`;
 
-  // 4. YOUR Updated tsconfig.json 
-  // We add "types" to solve the VS Code errors!
+  // 4. tsconfig.json
   const tsConfig = {
     compilerOptions: {
       lib: ["ESNext"],
@@ -73,7 +86,7 @@ console.log("🔥 BareJS running on http://localhost:3000");`;
       noFallthroughCasesInSwitch: true,
       noUncheckedIndexedAccess: true,
       noImplicitOverride: true,
-      types: ["bun-types"] // 👈 The critical fix for Bun globals
+      types: ["bun-types"]
     }
   };
 
