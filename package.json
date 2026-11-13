@@ -1,6 +1,6 @@
 {
   "name": "create-barejs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Official starter kit for the high-performance BareJS framework",
   "type": "module",
   "main": "./bin/index.ts",
@@ -15,7 +15,7 @@
     "fast",
     "typescript"
   ],
-  "author": "xarhang <xarhang@protronmail.com>",
+  "author": "xarhang <xarhang@protonmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/xarhang/create-barejs#readme",
   "repository": {

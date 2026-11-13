@@ -43,8 +43,8 @@ bun dev
 
 ## 📘 Documentation
 
-For advanced usage, including **JWT Authentication**, **Data Validation (TypeBox/Zod)**, and **Middleware Orchestration**, please visit the main [BareJS Repository](https://www.google.com/search?q=https://github.com/xarhang/bareJS).
+For advanced usage, including **JWT Authentication**, **Data Validation (TypeBox/Zod)**, and **Middleware Orchestration**, please visit the main [BareJS Repository](https://github.com/xarhang/bareJS).
 
 ---
 
-**Maintained by [xarhang](https://github.com/xarhang) | **License: MIT**
+**Maintained by [xarhang](https://github.com/xarhang)** | **License: MIT**

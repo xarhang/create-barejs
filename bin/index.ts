@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 import { write, spawn } from "bun";
-import { mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, readdir } from "node:fs/promises";
+import { basename, isAbsolute, join, relative, resolve } from "node:path";
 
-const projectName = Bun.argv[2];
+const projectName = Bun.argv[2]?.trim();
 
 if (!projectName) {
   console.error("❌ Error: Please provide a project name.");
@@ -11,17 +11,40 @@ if (!projectName) {
   process.exit(1);
 }
 
-const root = join(process.cwd(), projectName);
+const cwd = process.cwd();
+const root = resolve(cwd, projectName);
+const rel = relative(cwd, root);
+
+if (rel === "" || rel.startsWith("..") || isAbsolute(rel)) {
+  console.error("❌ Error: Invalid project path. Project must be created inside a new subdirectory of the current working directory.");
+  process.exit(1);
+}
+
+const rawPkgName = basename(root).toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^[._-]+|[._-]+$/g, "");
+const pkgName = rawPkgName || "barejs-app";
 
 async function init() {
   console.log(`\n🚀 Initializing BareJS project: ${projectName}...`);
 
-  // 1. Create directory structure
+  // 1. Ensure target directory does not already contain files
+  try {
+    const existing = await readdir(root);
+    if (existing.length > 0) {
+      console.error(`❌ Error: Directory "${projectName}" already exists and is not empty.`);
+      process.exit(1);
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw err;
+    }
+  }
+
+  // 2. Create directory structure
   await mkdir(root, { recursive: true });
 
-  // 2. package.json
+  // 3. package.json
   const pkg = {
-    name: projectName,
+    name: pkgName,
     version: "1.0.0",
     type: "module",
     scripts: {
@@ -37,7 +60,7 @@ async function init() {
     }
   };
 
-  // 3. index.ts (Updated for the new Lazy Body & Context Architecture)
+  // 4. index.ts (Updated for the new Lazy Body & Context Architecture)
   const indexTs = `import { BareJS, type Context } from "barejs";
 
 const app = new BareJS();
@@ -68,7 +91,7 @@ app.post("/submit", async (ctx: Context) => {
 app.listen(3000);
 console.log("🔥 BareJS running on http://localhost:3000");`;
 
-  // 4. tsconfig.json
+  // 5. tsconfig.json
   const tsConfig = {
     compilerOptions: {
       lib: ["ESNext"],
@@ -97,13 +120,26 @@ console.log("🔥 BareJS running on http://localhost:3000");`;
   await write(join(root, ".gitignore"), "node_modules/\ndist/");
 
   console.log("📦 Installing dependencies...");
-  
-  // 5. Run Bun Install
-  const install = spawn(["bun", "install"], { cwd: root, stdout: "inherit" });
-  await install.exited;
 
+  // 6. Run Bun Install
+  const install = spawn(["bun", "install"], {
+    cwd: root,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  const exitCode = await install.exited;
+
+  if (exitCode !== 0) {
+    console.error(`\n❌ Failed to install dependencies (exit code ${exitCode}).`);
+    process.exit(exitCode);
+  }
+
+  const cdTarget = projectName.includes(" ") ? JSON.stringify(projectName) : projectName;
   console.log(`\n✅ Project "${projectName}" is ready!`);
-  console.log(`  cd ${projectName}\n  bun dev\n`);
+  console.log(`  cd ${cdTarget}\n  bun dev\n`);
 }
 
-init();
+init().catch((err) => {
+  console.error("❌ Error initializing project:", err instanceof Error ? err.message : err);
+  process.exit(1);
+});
